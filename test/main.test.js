@@ -22,16 +22,18 @@ const cases = [
     description: 'PNG file',
     input: 'test/data/input1.png',
     expectedHexOutput: 'test/data/output1-hex.txt',
+    expectedOctOutput: 'test/data/output1-oct.txt',
   },
   {
     description: 'PDF file',
     input: 'test/data/input2.pdf',
     expectedHexOutput: 'test/data/output2-hex.txt',
+    expectedOctOutput: 'test/data/output2-oct.txt',
   }
 ]
 
 describe('Hexdump PHP Tests', () => {
-  cases.forEach(({ description, input, expectedHexOutput }) => {
+  cases.forEach(({ description, input, expectedHexOutput, expectedOctOutput }) => {
     describe(`${description}`, () => {
       it(`should produce correct hexidecimal (base 16) output`, () => {
         // arrange
@@ -39,6 +41,17 @@ describe('Hexdump PHP Tests', () => {
         
         // act
         const stdout = runCommand('php', ['php/hexdump.php', input])
+        
+        // assert
+        expect(stdout).toBe(expectedOutput)
+      })
+      
+      it(`should produce correct octal (base 8) output`, () => {
+        // arrange
+        const expectedOutput = getFileContent(expectedOctOutput)
+        
+        // act
+        const stdout = runCommand('php', ['php/hexdump.php', '-o', input])
         
         // assert
         expect(stdout).toBe(expectedOutput)
