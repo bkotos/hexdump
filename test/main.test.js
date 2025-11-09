@@ -8,13 +8,30 @@ const getFileContent = (path) => {
 }
 
 const runCommand = (command, args) => {
+  const stdin = 'ignore';
+  const stdout = 'pipe';
+  const stderr = 'pipe';
   const result = spawnSync(command, args, {
     cwd: process.cwd(),
-    stdio: ['ignore', 'pipe', 'pipe'], // ignore stdin, capture stdout and stderr
+    stdio: [stdin, stdout, stderr], // ignore stdin, capture stdout and stderr
     encoding: 'utf-8',
   })
 
-  return result.stdout
+  return result.stdout.toString()
+}
+
+const runCommandWithStdin = (command, args, stdinInput) => {
+  const stdin = 'pipe';
+  const stdout = 'pipe';
+  const stderr = 'pipe';
+  const result = spawnSync(command, args, {
+    cwd: process.cwd(),
+    stdio: [stdin, stdout, stderr], // pipe stdin, capture stdout and stderr
+    input: stdinInput,
+    encoding: 'utf-8',
+  })
+
+  return result.stdout.toString()
 }
 
 const cases = [
@@ -68,6 +85,48 @@ describe('Hexdump PHP Tests', () => {
         
         // assert
         expect(stdout).toBe(expectedOutput)
+      })
+    })
+  })
+
+  describe('piped stdin', () => {
+    cases.forEach(({ description, input, expectedHexOutput, expectedOctOutput, expectedBinOutput }) => {
+      describe(`${description}`, () => {
+        it(`should produce correct hexadecimal (base 16) output from stdin`, () => {
+          // arrange
+          const inputContent = readFileSync(join(process.cwd(), input), null) // Read as binary
+          const expectedOutput = getFileContent(expectedHexOutput)
+          
+          // act
+          const stdout = runCommandWithStdin('php', ['php/hexdump.php'], inputContent)
+          
+          // assert
+          expect(stdout).toBe(expectedOutput)
+        })
+
+        it(`should produce correct octal (base 8) output from stdin`, () => {
+          // arrange
+          const inputContent = readFileSync(join(process.cwd(), input), null) // Read as binary
+          const expectedOutput = getFileContent(expectedOctOutput)
+          
+          // act
+          const stdout = runCommandWithStdin('php', ['php/hexdump.php', '-o'], inputContent)
+          
+          // assert
+          expect(stdout).toBe(expectedOutput)
+        })
+
+        it(`should produce correct binary (base 2) output from stdin`, () => {
+          // arrange
+          const inputContent = readFileSync(join(process.cwd(), input), null) // Read as binary
+          const expectedOutput = getFileContent(expectedBinOutput)
+          
+          // act
+          const stdout = runCommandWithStdin('php', ['php/hexdump.php', '-b'], inputContent)
+          
+          // assert
+          expect(stdout).toBe(expectedOutput)
+        })
       })
     })
   })

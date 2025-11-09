@@ -8,7 +8,6 @@ define('OCTAL_FLAG', '-o');
  */
 function main(array &$arguments)
 {
-    $hasStdIn = ftell(STDIN) !== false;
     $isBin = argumentFlagExists(BINARY_FLAG, $arguments);
     $isOct = argumentFlagExists(OCTAL_FLAG, $arguments);
 
@@ -27,6 +26,11 @@ function main(array &$arguments)
     }
 
     list($command, $filename) = array_pad($arguments, 2, null);
+    
+    // If no filename is provided, use stdin
+    // Otherwise, use the file (not stdin)
+    $hasStdIn = ($filename === null);
+    
     $file = getFile($hasStdIn, $filename);
 
     if (!$file) {
@@ -35,17 +39,27 @@ function main(array &$arguments)
 
     $bytes = [];
     $chars = '';
+    $byteOffset = 0; // Track byte position manually for both stdin and files
+
+    // For files, initialize offset from current position
+    if (!$hasStdIn) {
+        $byteOffset = ftell($file);
+    }
 
     for($i = 0; !feof($file); $i++) {
         $isNewLine = ($i + 1) % $bytesPerLine === 0;
         $isFirstByteOfLine = $i % $bytesPerLine === 0;
 
         if ($isFirstByteOfLine) {
-            $line = str_pad(dechex(ftell($file)), 8, '0', STR_PAD_LEFT);
+            $line = str_pad(dechex($byteOffset), 8, '0', STR_PAD_LEFT);
         }
 
         $char = fread($file, 1);
+        if ($char === false || $char === '') {
+            break;
+        }
         $ascii = ord($char);
+        $byteOffset++; // Increment offset after reading (consistent for both)
         $chars .= getPrintableChar($char);
         if ($isBin) {
             $bytes[] = asciiToBin($ascii);
@@ -94,7 +108,7 @@ function getFile(bool $hasStdIn, ?string $filename = null)
 {
     if ($hasStdIn) {
         return STDIN;
-    } elseif(file_exists($filename)) {
+    } elseif($filename !== null && file_exists($filename)) {
         return fopen($filename, 'r');
     }
 
