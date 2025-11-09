@@ -90,7 +90,7 @@ function argumentFlagExists(string $argumentFlag, array &$arguments): bool
  * @param string|null $filename
  * @return resource|bool|null
  */
-function getFile(bool $hasStdIn, string $filename = null)
+function getFile(bool $hasStdIn, ?string $filename = null)
 {
     if ($hasStdIn) {
         return STDIN;
