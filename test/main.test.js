@@ -17,16 +17,28 @@ const runCommand = (command, args) => {
   return result.stdout
 }
 
+const cases = [
+  {
+    description: 'PNG file',
+    input: 'test/data/input1.png',
+    expectedHexOutput: 'test/data/output1-hex.txt',
+  },
+]
+
 describe('Hexdump PHP Tests', () => {
-  it('should produce correct hexdump output for test.png', () => {
-    // arrange
-    const expectedOutput = getFileContent('test/data/output1-bin.txt')
-    
-    // act
-    const stdout = runCommand('php', ['php/hexdump.php', 'test/data/input1.png'])
-    
-    // assert
-    expect(stdout).toBe(expectedOutput)
+  cases.forEach(({ description, input, expectedHexOutput }) => {
+    describe(`${description}`, () => {
+      it(`should produce correct hexidecimal (base 16) output`, () => {
+        // arrange
+        const expectedOutput = getFileContent(expectedHexOutput)
+        
+        // act
+        const stdout = runCommand('php', ['php/hexdump.php', input])
+        
+        // assert
+        expect(stdout).toBe(expectedOutput)
+      })
+    })
   })
 })
 
