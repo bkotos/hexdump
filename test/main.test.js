@@ -23,6 +23,11 @@ const cases = [
     input: 'test/data/input1.png',
     expectedHexOutput: 'test/data/output1-hex.txt',
   },
+  {
+    description: 'PDF file',
+    input: 'test/data/input2.pdf',
+    expectedHexOutput: 'test/data/output2-hex.txt',
+  }
 ]
 
 describe('Hexdump PHP Tests', () => {
