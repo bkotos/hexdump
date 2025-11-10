@@ -9,6 +9,11 @@ const implementations = [
     description: 'PHP',
     command: 'php',
     baseArgs: ['php/hexdump.php']
+  },
+  {
+    description: 'Go',
+    command: 'go',
+    baseArgs: ['run', 'go/main.go']
   }
 ]
 
