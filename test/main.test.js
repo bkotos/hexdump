@@ -1,56 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { spawnSync } from 'child_process'
 import { readFileSync } from 'fs'
 import { join } from 'path'
 import pty from 'node-pty'
-
-const getFileContent = (path) => {
-  return readFileSync(join(process.cwd(), path), 'utf-8')
-}
-
-const runCommand = (command, args) => {
-  const stdin = 'ignore';
-  const stdout = 'pipe';
-  const stderr = 'pipe';
-  const result = spawnSync(command, args, {
-    cwd: process.cwd(),
-    stdio: [stdin, stdout, stderr], // ignore stdin, capture stdout and stderr
-    encoding: 'utf-8',
-  })
-
-  return result.stdout.toString()
-}
-
-const runCommandWithStdin = (command, args, stdinInput) => {
-  const stdin = 'pipe';
-  const stdout = 'pipe';
-  const stderr = 'pipe';
-  const result = spawnSync(command, args, {
-    cwd: process.cwd(),
-    stdio: [stdin, stdout, stderr], // pipe stdin, capture stdout and stderr
-    input: stdinInput,
-    encoding: 'utf-8',
-  })
-
-  return result.stdout.toString()
-}
-
-const exitOrTimeoutRace = async (ptyProcess) => {
-  const exitPromise = new Promise((resolve) => {
-    ptyProcess.onExit(() => {
-      resolve({ timedOut: false })
-    })
-  })
-
-  const timeoutPromise = new Promise((resolve) => {
-    setTimeout(() => {
-      ptyProcess.kill()
-      resolve({ timedOut: true })
-    }, 1000)
-  })
-
-  return await Promise.race([exitPromise, timeoutPromise])
-}
+import { getFileContent, runCommand, runCommandWithStdin, exitOrTimeoutRace, getCommandAndBaseArgs } from './utils.js'
 
 const cases = [
   {
@@ -70,6 +22,8 @@ const cases = [
 ]
 
 describe('Hexdump PHP Tests', () => {
+  const { command, baseArgs } = getCommandAndBaseArgs('php')
+
   cases.forEach(({ description, input, expectedHexOutput, expectedOctOutput, expectedBinOutput }) => {
     describe(`${description}`, () => {
       it(`should produce correct hexidecimal (base 16) output`, () => {
@@ -77,7 +31,7 @@ describe('Hexdump PHP Tests', () => {
         const expectedOutput = getFileContent(expectedHexOutput)
         
         // act
-        const stdout = runCommand('php', ['php/hexdump.php', input])
+        const stdout = runCommand(command, [...baseArgs, input])
         
         // assert
         expect(stdout).toBe(expectedOutput)
@@ -88,7 +42,7 @@ describe('Hexdump PHP Tests', () => {
         const expectedOutput = getFileContent(expectedOctOutput)
         
         // act
-        const stdout = runCommand('php', ['php/hexdump.php', '-o', input])
+        const stdout = runCommand(command, [...baseArgs, '-o', input])
         
         // assert
         expect(stdout).toBe(expectedOutput)
@@ -99,7 +53,7 @@ describe('Hexdump PHP Tests', () => {
         const expectedOutput = getFileContent(expectedBinOutput)
         
         // act
-        const stdout = runCommand('php', ['php/hexdump.php', '-b', input])
+        const stdout = runCommand(command, [...baseArgs, '-b', input])
         
         // assert
         expect(stdout).toBe(expectedOutput)
@@ -116,7 +70,7 @@ describe('Hexdump PHP Tests', () => {
           const expectedOutput = getFileContent(expectedHexOutput)
           
           // act
-          const stdout = runCommandWithStdin('php', ['php/hexdump.php'], inputContent)
+          const stdout = runCommandWithStdin(command, [...baseArgs], inputContent)
           
           // assert
           expect(stdout).toBe(expectedOutput)
@@ -128,7 +82,7 @@ describe('Hexdump PHP Tests', () => {
           const expectedOutput = getFileContent(expectedOctOutput)
           
           // act
-          const stdout = runCommandWithStdin('php', ['php/hexdump.php', '-o'], inputContent)
+          const stdout = runCommandWithStdin(command, [...baseArgs, '-o'], inputContent)
           
           // assert
           expect(stdout).toBe(expectedOutput)
@@ -140,7 +94,7 @@ describe('Hexdump PHP Tests', () => {
           const expectedOutput = getFileContent(expectedBinOutput)
           
           // act
-          const stdout = runCommandWithStdin('php', ['php/hexdump.php', '-b'], inputContent)
+          const stdout = runCommandWithStdin(command, [...baseArgs, '-b'], inputContent)
           
           // assert
           expect(stdout).toBe(expectedOutput)
@@ -152,7 +106,7 @@ describe('Hexdump PHP Tests', () => {
   describe('no input provided', () => {
     it('should exit immediately when no file path and no stdin is provided', async () => {
       // arrange
-      const ptyProcess = pty.spawn('php', ['php/hexdump.php'], {
+      const ptyProcess = pty.spawn(command, [...baseArgs], {
         name: 'xterm-color',
         cols: 80,
         rows: 24,
