@@ -1,7 +1,6 @@
 import { spawnSync } from 'child_process'
 import { readFileSync } from 'fs'
 import { join } from 'path'
-import pty from 'node-pty'
 
 export const getFileContent = (path) => {
   return readFileSync(join(process.cwd(), path), 'utf-8')
@@ -49,11 +48,4 @@ export const exitOrTimeoutRace = async (ptyProcess) => {
   })
 
   return await Promise.race([exitPromise, timeoutPromise])
-}
-
-export const getCommandAndBaseArgs = (language) => {
-    return {
-        command: 'php',
-        baseArgs: ['php/hexdump.php']
-    }
 }
