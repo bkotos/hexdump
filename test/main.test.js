@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { spawnSync } from 'child_process'
 import { readFileSync } from 'fs'
 import { join } from 'path'
+import pty from 'node-pty'
 
 const getFileContent = (path) => {
   return readFileSync(join(process.cwd(), path), 'utf-8')
@@ -32,6 +33,23 @@ const runCommandWithStdin = (command, args, stdinInput) => {
   })
 
   return result.stdout.toString()
+}
+
+const exitOrTimeoutRace = async (ptyProcess) => {
+  const exitPromise = new Promise((resolve) => {
+    ptyProcess.onExit(() => {
+      resolve({ timedOut: false })
+    })
+  })
+
+  const timeoutPromise = new Promise((resolve) => {
+    setTimeout(() => {
+      ptyProcess.kill()
+      resolve({ timedOut: true })
+    }, 1000)
+  })
+
+  return await Promise.race([exitPromise, timeoutPromise])
 }
 
 const cases = [
@@ -128,6 +146,25 @@ describe('Hexdump PHP Tests', () => {
           expect(stdout).toBe(expectedOutput)
         })
       })
+    })
+  })
+
+  describe('no input provided', () => {
+    it('should exit immediately when no file path and no stdin is provided', async () => {
+      // arrange
+      const ptyProcess = pty.spawn('php', ['php/hexdump.php'], {
+        name: 'xterm-color',
+        cols: 80,
+        rows: 24,
+        cwd: process.cwd(),
+        env: process.env,
+      })
+      
+      // act
+      const result = await exitOrTimeoutRace(ptyProcess)
+
+      // assert
+      expect(result.timedOut).toBe(false)
     })
   })
 })

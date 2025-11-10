@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "node-pty": "^1.0.0",
     "vitest": "^4.0.8"
   }
 }

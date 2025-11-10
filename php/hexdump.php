@@ -37,6 +37,8 @@ function main(array &$arguments)
         exit(0);
     }
 
+    exitIfNoInput($hasStdIn);
+
     $bytes = [];
     $chars = '';
     $byteOffset = 0; // Track byte position manually for both stdin and files
@@ -175,6 +177,21 @@ function asciiToHex(int $ascii): string
 function asciiToOct(int $ascii): string
 {
     return str_pad(decoct($ascii), 3, '0', STR_PAD_LEFT);
+}
+
+/**
+ * @param bool $hasStdIn
+ */
+function exitIfNoInput(bool $hasStdIn)
+{
+    if ($hasStdIn && function_exists('stream_isatty') && stream_isatty(STDIN)) {
+        $read = [STDIN];
+        $write = null;
+        $except = null;
+        if (stream_select($read, $write, $except, 0) === 0) {
+            exit(0);
+        }
+    }
 }
 
 main($argv);
