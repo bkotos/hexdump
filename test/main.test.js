@@ -1,8 +1,14 @@
 import { describe, it, expect, beforeAll } from 'vitest'
 import { readFileSync } from 'fs'
 import { join } from 'path'
-import pty from 'node-pty'
-import { getFileContent, runCommand, runCommandWithStdin, exitOrTimeoutRace, compileGo } from './utils.js'
+import {
+  getFileContent,
+  runCommand,
+  runCommandWithStdin,
+  runCommandWithSimulatedTty,
+  exitOrTimeoutRace,
+  compileGo
+} from './utils.js'
 
 const implementations = [
   {
@@ -123,16 +129,10 @@ describe('Hexdump', () => {
       describe('no input provided', () => {
         it('should exit immediately when no file path and no stdin is provided', async () => {
           // arrange
-          const ptyProcess = pty.spawn(command, [...baseArgs], {
-            name: 'xterm-color',
-            cols: 80,
-            rows: 24,
-            cwd: process.cwd(),
-            env: process.env,
-          })
+          const process = runCommandWithSimulatedTty(command, [...baseArgs])
           
           // act
-          const result = await exitOrTimeoutRace(ptyProcess)
+          const result = await exitOrTimeoutRace(process)
     
           // assert
           expect(result.timedOut).toBe(false)

@@ -1,6 +1,7 @@
 import { spawnSync } from 'child_process'
 import { readFileSync } from 'fs'
 import { join } from 'path'
+import pty from 'node-pty'
 
 export const getFileContent = (path) => {
   return readFileSync(join(process.cwd(), path), 'utf-8')
@@ -31,6 +32,16 @@ export const runCommandWithStdin = (command, args, stdinInput) => {
   })
 
   return result.stdout.toString()
+}
+
+export const runCommandWithSimulatedTty = (command, args) => {
+  return pty.spawn(command, [...args], {
+    name: 'xterm-color',
+    cols: 80,
+    rows: 24,
+    cwd: process.cwd(),
+    env: process.env,
+  })
 }
 
 export const exitOrTimeoutRace = async (ptyProcess) => {
