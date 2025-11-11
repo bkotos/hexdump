@@ -7,6 +7,38 @@ import (
 	"strings"
 )
 
+func main() {
+	data := getBytes()
+
+	var bytes []string
+	chars := ""
+	bytesPerLine, colsPerByte := getSpacing()
+
+	byteOffset := 0
+	line := ""
+	for i, b := range data {
+		isFirstByteOfLine := i%bytesPerLine == 0
+		if isFirstByteOfLine {
+			line = fmt.Sprintf("%08x", byteOffset)
+		}
+
+		bytes = append(bytes, renderByte(b))
+		chars = chars + getPrintableChar(b)
+
+		isNewLine := (i+1)%bytesPerLine == 0
+		if isNewLine {
+			fmt.Print(renderDump(bytesPerLine, colsPerByte, line, &bytes, &chars))
+			line = ""
+		}
+
+		byteOffset++
+	}
+
+	if len(bytes) > 0 {
+		fmt.Print(renderDump(bytesPerLine, colsPerByte, line, &bytes, &chars))
+	}
+}
+
 func hasFlag(flag string) bool {
 	for _, arg := range os.Args[1:] {
 		if arg == flag {
@@ -68,38 +100,6 @@ func getBytes() []byte {
 	fileName := getFileName()
 	data, _ := os.ReadFile(fileName)
 	return data
-}
-
-func main() {
-	data := getBytes()
-
-	var bytes []string
-	chars := ""
-	bytesPerLine, colsPerByte := getSpacing()
-
-	byteOffset := 0
-	line := ""
-	for i, b := range data {
-		isFirstByteOfLine := i%bytesPerLine == 0
-		if isFirstByteOfLine {
-			line = fmt.Sprintf("%08x", byteOffset)
-		}
-
-		bytes = append(bytes, renderByte(b))
-		chars = chars + getPrintableChar(b)
-
-		isNewLine := (i+1)%bytesPerLine == 0
-		if isNewLine {
-			fmt.Print(renderDump(bytesPerLine, colsPerByte, line, &bytes, &chars))
-			line = ""
-		}
-
-		byteOffset++
-	}
-
-	if len(bytes) > 0 {
-		fmt.Print(renderDump(bytesPerLine, colsPerByte, line, &bytes, &chars))
-	}
 }
 
 func renderByte(b byte) string {
