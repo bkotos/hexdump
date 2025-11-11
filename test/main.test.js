@@ -26,8 +26,8 @@ const cases = [
     expectedBinOutput: 'test/data/output1-bin.txt',
   },
   {
-    description: 'PDF file',
-    input: 'test/data/input2.pdf',
+    description: 'GIF file',
+    input: 'test/data/input2.gif',
     expectedHexOutput: 'test/data/output2-hex.txt',
     expectedOctOutput: 'test/data/output2-oct.txt',
     expectedBinOutput: 'test/data/output2-bin.txt',
