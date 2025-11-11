@@ -31,7 +31,12 @@ func getSpacing() (bytesPerLine int, colsPerByte int) {
 }
 
 func main() {
-	data, _ := os.ReadFile("test/data/input1.png")
+	if len(os.Args) < 2 {
+		os.Exit(0)
+	}
+	fileName := os.Args[1]
+
+	data, _ := os.ReadFile(fileName)
 
 	var bytes []string
 	chars := ""
