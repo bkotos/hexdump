@@ -2,12 +2,14 @@
 
 define('BINARY_FLAG', '-b');
 define('OCTAL_FLAG', '-o');
+define('HEXADECIMAL_FLAG', '-x');
 
 /**
  * @param string[] $arguments
  */
 function main(array &$arguments)
 {
+    argumentFlagExists(HEXADECIMAL_FLAG, $arguments);
     $isBin = argumentFlagExists(BINARY_FLAG, $arguments);
     $isOct = argumentFlagExists(OCTAL_FLAG, $arguments);
 

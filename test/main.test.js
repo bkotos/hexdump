@@ -49,12 +49,23 @@ describe('Hexdump', () => {
     describe(`${description} Implementation`, () => {
       cases.forEach(({ description, input, expectedHexOutput, expectedOctOutput, expectedBinOutput }) => {
         describe(`${description}`, () => {
-          it(`should produce correct hexidecimal (base 16) output`, () => {
+          it(`should produce correct hexidecimal (base 16) output when no CLI flag is specified`, () => {
             // arrange
             const expectedOutput = getFileContent(expectedHexOutput)
             
             // act
             const stdout = runCommand(command, [...baseArgs, input])
+            
+            // assert
+            expect(stdout).toBe(expectedOutput)
+          })
+
+          it(`should produce correct hexidecimal (base 16) output`, () => {
+            // arrange
+            const expectedOutput = getFileContent(expectedHexOutput)
+            
+            // act
+            const stdout = runCommand(command, [...baseArgs, '-x', input])
             
             // assert
             expect(stdout).toBe(expectedOutput)

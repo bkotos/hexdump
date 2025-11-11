@@ -23,17 +23,21 @@ All implementations support:
 
 **PHP:**
 ```
-php hexdump.php [-b,-o] [<path>]
-cat <path> | php hexdump.php [-b,-o]
+php hexdump.php [-x,-b,-o] [<path>]
+cat <path> | php hexdump.php [-x,-b,-o]
 ```
 
 **Go:**
 ```
-.bin/hexdump [-b,-o] [<path>]
-cat <path> | .bin/hexdump [-b,-o]
+.bin/hexdump [-x,-b,-o] [<path>]
+cat <path> | .bin/hexdump [-x,-b,-o]
 ```
 
 ### Arguments
+
+#### `-x`
+
+Show data in hexadecimal format. This is the default behavior.
 
 #### `-b`
 
