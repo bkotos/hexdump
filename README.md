@@ -17,6 +17,101 @@ All implementations support:
 - Binary output (`-b` flag)
 - Reading from file or piped stdin
 
+## Command-line interface
+
+### Synopsis
+
+**PHP:**
+```
+php hexdump.php [-b,-o] [<path>]
+cat <path> | php hexdump.php [-b,-o]
+```
+
+**Go:**
+```
+hexdump [-b,-o] [<path>]
+cat <path> | hexdump [-b,-o]
+```
+
+or
+
+```
+go run main.go [-b,-o] [<path>]
+cat <path> | go run main.go [-b,-o]
+```
+
+### Arguments
+
+#### `-b`
+
+Show data in binary format.
+
+#### `-o`
+
+Show data in octal format.
+
+#### `<path>`
+
+_Optional_  
+Path to the file to dump. If not provided, data will be read from stdin.
+
+## Example
+
+Example hexadecimal output for a PNG file:
+
+**PHP:**
+```bash
+php php/hexdump.php test/data/input1.png
+```
+
+**Go:**
+```bash
+.bin/hexdump test/data/input1.png
+```
+
+**Output:**
+```
+00000000: 89 50 4e 47 0d 0a 1a 0a 00 00 00 0d 49 48 44 52  .PNG........IHDR
+00000010: 00 00 00 19 00 00 00 19 08 06 00 00 00 c4 e9 85  ................
+00000020: 63 00 00 01 85 69 43 43 50 49 43 43 20 70 72 6f  c....iCCPICC pro
+00000030: 66 69 6c 65 00 00 28 91 7d 91 3d 48 c3 40 1c c5  file..(.}.=H.@..
+00000040: 5f d3 96 8a 54 1c 2c 28 e2 90 a1 3a 59 10 15 11  _...T.,(...:Y...
+00000050: 27 ad 42 11 2a 84 5a a1 55 07 93 4b bf a0 49 43  '.B.*.Z.U..K..IC
+00000060: 92 e2 e2 28 b8 16 1c fc 58 ac 3a b8 38 eb ea e0  ...(....X.:.8...
+00000070: 2a 08 82 1f 20 2e ae 4e 8a 2e 52 e2 ff d2 42 8b  *... ..N..R...B.
+00000080: 18 0f 8e fb f1 ee de e3 ee 1d 20 d4 cb 4c b3 02  .......... ..L..
+00000090: 63 80 a6 db 66 2a 11 17 33 d9 55 31 f4 8a 20 fa  c...f*..3.U1.. .
+000000a0: 11 c0 0c 42 32 b3 8c 39 49 4a c2 73 7c dd c3 c7  ...B2..9IJ.s|...
+000000b0: d7 bb 18 cf f2 3e f7 e7 e8 51 73 16 03 7c 22 f1  .....>...Qs..|".
+000000c0: 2c 33 4c 9b 78 83 78 6a d3 36 38 ef 13 47 58 51  ,3L.x.xj.68..GXQ
+000000d0: 56 89 cf 89 47 4d ba 20 f1 23 d7 95 26 bf 71 2e  V...GM. .#..&.q.
+000000e0: b8 2c f0 cc 88 99 4e cd 13 47 88 c5 42 07 2b 1d  .,....N..G..B.+.
+000000f0: cc 8a a6 46 3c 49 1c 55 35 9d f2 85 4c 93 55 ce  ...F<I.U5...L.U.
+00000100: 5b 9c b5 72 95 b5 ee c9 5f 18 ce e9 2b cb 5c a7  [..r...._...+.\.
+00000110: 39 84 04 16 b1 04 09 22 14 54 51 42 19 36 62 b4  9......".TQB.6b.
+00000120: ea a4 58 48 d1 7e dc c3 3f e8 fa 25 72 29 e4 2a  ..XH.~..?..%r).*
+00000130: 81 91 63 01 15 68 90 5d 3f f8 1f fc ee d6 ca 4f  ..c..h.]?......O
+00000140: 8c 37 93 c2 71 20 f8 e2 38 1f c3 40 68 17 68 d4  .7..q ..8..@h.h.
+00000150: 1c e7 fb d8 71 1a 27 80 ff 19 b8 d2 db fe 4a 1d  ....q.'.......J.
+00000160: 98 fe 24 bd d6 d6 a2 47 40 ef 36 70 71 dd d6 94  ..$....G@.6pq...
+00000170: 3d e0 72 07 18 78 32 64 53 76 25 3f 4d 21 9f 07  =.r..x2dSv%?M!..
+00000180: de cf e8 9b b2 40 df 2d d0 bd d6 ec ad b5 8f d3  .....@.-........
+00000190: 07 20 4d 5d 25 6f 80 83 43 60 a4 40 d9 eb 1e ef  . M]%o..C`.@....
+000001a0: ee ea ec ed df 33 ad fe 7e 00 5a 2b 72 9d 56 0c  .....3..~.Z+r.V.
+000001b0: 8a b3 00 00 00 06 62 4b 47 44 00 ff 00 ff 00 ff  ......bKGD......
+000001c0: a0 bd a7 93 00 00 00 09 70 48 59 73 00 00 2e 23  ........pHYs...#
+000001d0: 00 00 2e 23 01 78 a5 3f 76 00 00 00 07 74 49 4d  ...#.x.?v....tIM
+000001e0: 45 07 e3 05 17 05 03 35 22 7f 76 d1 00 00 00 19  E......5".v.....
+000001f0: 74 45 58 74 43 6f 6d 6d 65 6e 74 00 43 72 65 61  tEXtComment.Crea
+00000200: 74 65 64 20 77 69 74 68 20 47 49 4d 50 57 81 0e  ted with GIMPW..
+00000210: 17 00 00 00 42 49 44 41 54 48 c7 63 60 a0 03 60  ....BIDATH.c`..`
+00000220: 84 31 fe 33 30 fc c7 29 49 2c f8 8f d5 06 46 26  .1.30..)I,....F&
+00000230: 7a f8 64 d4 12 f2 22 1e 67 b4 51 21 ea 47 e3 64  z.d...".g.Q!.G.d
+00000240: d4 92 51 4b 46 2d 19 8a 96 b0 10 28 db fe 8f 06  ..QKF-.....(....
+00000250: d7 f0 b4 84 2e 00 00 21 66 07 2e 6c e1 0c 22 00  .......!f..l..".
+00000260: 00 00 00 49 45 4e 44 ae 42 60 82                 ...IEND.B`.
+```
+
 ## Testing
 
 The project includes a comprehensive test suite using [Vitest](https://vitest.dev/) that validates all implementations against expected outputs.
