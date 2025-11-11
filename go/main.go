@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"strings"
 )
@@ -16,13 +17,21 @@ func hasFlag(flag string) bool {
 	return false
 }
 
+func isBinary() bool {
+	return hasFlag("-b")
+}
+
+func isOctal() bool {
+	return hasFlag("-o")
+}
+
 func getSpacing() (bytesPerLine int, colsPerByte int) {
 	bytesPerLine = 16
 	colsPerByte = 3
-	if hasFlag("-b") {
+	if isBinary() {
 		bytesPerLine = 6
 		colsPerByte = 9
-	} else if hasFlag("-o") {
+	} else if isOctal() {
 		bytesPerLine = 12
 		colsPerByte = 4
 	}
@@ -41,13 +50,28 @@ func getFileName() string {
 	return ""
 }
 
-func main() {
+func hasStdIn() bool {
+	stat, _ := os.Stdin.Stat()
+	return (stat.Mode() & os.ModeCharDevice) == 0
+}
+
+func getBytes() []byte {
+	if hasStdIn() {
+		data, _ := io.ReadAll(os.Stdin)
+		return data
+	}
+
 	if len(os.Args) < 2 {
 		os.Exit(0)
 	}
-	fileName := getFileName()
 
+	fileName := getFileName()
 	data, _ := os.ReadFile(fileName)
+	return data
+}
+
+func main() {
+	data := getBytes()
 
 	var bytes []string
 	chars := ""
@@ -79,9 +103,9 @@ func main() {
 }
 
 func renderByte(b byte) string {
-	if hasFlag("-b") {
+	if isBinary() {
 		return fmt.Sprintf("%08b", b)
-	} else if hasFlag("-o") {
+	} else if isOctal() {
 		return fmt.Sprintf("%03o", b)
 	}
 	return fmt.Sprintf("%02x", b)
