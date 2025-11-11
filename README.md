@@ -29,15 +29,8 @@ cat <path> | php hexdump.php [-b,-o]
 
 **Go:**
 ```
-hexdump [-b,-o] [<path>]
-cat <path> | hexdump [-b,-o]
-```
-
-or
-
-```
-go run main.go [-b,-o] [<path>]
-cat <path> | go run main.go [-b,-o]
+.bin/hexdump [-b,-o] [<path>]
+cat <path> | .bin/hexdump [-b,-o]
 ```
 
 ### Arguments
