@@ -30,11 +30,22 @@ func getSpacing() (bytesPerLine int, colsPerByte int) {
 	return
 }
 
+func getFileName() string {
+	for _, arg := range os.Args[1:] {
+		isFlag := string(arg[0]) == "-"
+		if !isFlag {
+			return arg
+		}
+
+	}
+	return ""
+}
+
 func main() {
 	if len(os.Args) < 2 {
 		os.Exit(0)
 	}
-	fileName := os.Args[1]
+	fileName := getFileName()
 
 	data, _ := os.ReadFile(fileName)
 
