@@ -18,14 +18,18 @@ func main() {
 		// fmt.Print(line)
 		// fmt.Print(string(b))
 
-		printable := string(byte(46))
-		if b >= 32 && b <= 126 {
-			printable = string(b)
-		}
-
+		printable := getPrintableChar(b)
 		fmt.Print(printable)
 
 		// fmt.Printf("00000000: %x (char: %c)\n", b, b)
 		// break
 	}
+}
+
+func getPrintableChar(b byte) string {
+	printable := string(byte(46))
+	if b >= 32 && b <= 126 {
+		printable = string(b)
+	}
+	return printable
 }
