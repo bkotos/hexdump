@@ -2,13 +2,6 @@
 
 A multi-language implementation of a hexdump utility for dumping the bytes of a file or stream in hexadecimal, octal, or binary format.
 
-## Requirements
-
-- **PHP** >= 8.4.5
-- **Go** >= 1.25.4
-- **Node.js** >= 22.21.1 (for running tests)
-- **npm** >= 10.9.4 (for running tests)
-
 ## Implementations
 
 This repository contains implementations in multiple programming languages:
@@ -37,6 +30,8 @@ The test suite verifies:
 - **Error handling**: Proper exit behavior when no input is provided
 
 ### Running Tests
+
+You will need **Node.js** >= 22.21.1 and **npm** >= 10.9.4 installed to run the tests.
 
 First, install dependencies:
 ```bash

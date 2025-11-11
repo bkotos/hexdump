@@ -1,7 +1,11 @@
 # go-hexdump
 This is the Go implementation of hexdump. See the [main README](../README.md) for more information about the project.
 
-A Go utility for dumping the bytes of a file or stream in hexadecimal, octal, or binary. 
+A Go utility for dumping the bytes of a file or stream in hexadecimal, octal, or binary.
+
+## Requirements
+
+- **Go** >= 1.25.4 
 
 ## Usage
 **go-hexdump** accepts a path argument representing the file it should read
