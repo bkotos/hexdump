@@ -45,7 +45,7 @@ func main() {
 			line = fmt.Sprintf("%08x", byteOffset)
 		}
 
-		bytes = append(bytes, fmt.Sprintf("%02x", b))
+		bytes = append(bytes, renderByte(b))
 		chars = chars + getPrintableChar(b)
 
 		isNewLine := (i+1)%bytesPerLine == 0
@@ -60,6 +60,15 @@ func main() {
 	if len(bytes) > 0 {
 		fmt.Print(renderDump(bytesPerLine, colsPerByte, line, &bytes, &chars))
 	}
+}
+
+func renderByte(b byte) string {
+	if hasFlag("-b") {
+		return fmt.Sprintf("%08b", b)
+	} else if hasFlag("-o") {
+		return fmt.Sprintf("%03o", b)
+	}
+	return fmt.Sprintf("%02x", b)
 }
 
 func renderDump(bytesPerLine int, colsPerByte int, line string, bytes *[]string, chars *string) string {
