@@ -6,14 +6,36 @@ import (
 	"strings"
 )
 
+func hasFlag(flag string) bool {
+	for _, arg := range os.Args[1:] {
+		if arg == flag {
+			return true
+		}
+
+	}
+	return false
+}
+
+func getSpacing() (bytesPerLine int, colsPerByte int) {
+	bytesPerLine = 16
+	colsPerByte = 3
+	if hasFlag("-b") {
+		bytesPerLine = 6
+		colsPerByte = 9
+	} else if hasFlag("-o") {
+		bytesPerLine = 12
+		colsPerByte = 4
+	}
+
+	return
+}
+
 func main() {
 	data, _ := os.ReadFile("test/data/input1.png")
 
 	var bytes []string
 	chars := ""
-
-	bytesPerLine := 16
-	colsPerByte := 3
+	bytesPerLine, colsPerByte := getSpacing()
 
 	byteOffset := 0
 	line := ""
