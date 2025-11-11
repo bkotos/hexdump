@@ -7,12 +7,8 @@ import (
 )
 
 func main() {
-	// fmt.Println("Hello, World!")
-
 	data, _ := os.ReadFile("test/data/input1.png")
-	// fmt.Println(string(data))
 
-	// line := ""
 	var bytes []string
 	chars := ""
 
