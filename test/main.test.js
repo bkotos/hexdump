@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeAll } from 'vitest'
 import { readFileSync } from 'fs'
 import { join } from 'path'
 import pty from 'node-pty'
-import { getFileContent, runCommand, runCommandWithStdin, exitOrTimeoutRace } from './utils.js'
+import { getFileContent, runCommand, runCommandWithStdin, exitOrTimeoutRace, compileGo } from './utils.js'
 
 const implementations = [
   {
@@ -12,8 +12,8 @@ const implementations = [
   },
   {
     description: 'Go',
-    command: 'go',
-    baseArgs: ['run', 'go/main.go']
+    command: 'go/.bin/hexdump',
+    baseArgs: []
   }
 ]
 
@@ -35,6 +35,10 @@ const cases = [
 ]
 
 describe('Hexdump', () => {
+  beforeAll(() => {
+    compileGo()
+  })
+
   implementations.forEach(({ description, command, baseArgs }) => {
     describe(`${description} Implementation`, () => {
       cases.forEach(({ description, input, expectedHexOutput, expectedOctOutput, expectedBinOutput }) => {

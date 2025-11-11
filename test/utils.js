@@ -49,3 +49,7 @@ export const exitOrTimeoutRace = async (ptyProcess) => {
 
   return await Promise.race([exitPromise, timeoutPromise])
 }
+
+export const compileGo = () => {
+  runCommand('go', ['build', '-o', 'go/.bin/hexdump', 'go/main.go'])
+}
